@@ -1,0 +1,26 @@
+{
+  "name": "com.ftg.sound-system",
+  "version": "0.1.0",
+  "displayName": "FTG Sound System",
+  "description": "A reusable Unity sound manager with AudioMixer volume control, BGM crossfades and pooled one-shot playback.",
+  "unity": "2022.3",
+  "author": {
+    "name": "幻想テクノロギア",
+    "url": "https://github.com/sanaftg"
+  },
+  "license": "MIT",
+  "keywords": [
+    "audio",
+    "sound",
+    "bgm",
+    "se",
+    "mixer"
+  ],
+  "samples": [
+    {
+      "displayName": "Basic Usage",
+      "description": "Setup notes and basic API examples.",
+      "path": "Samples~/BasicUsage"
+    }
+  ]
+}
