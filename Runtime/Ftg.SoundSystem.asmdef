@@ -1,0 +1,14 @@
+{
+  "name": "Ftg.SoundSystem",
+  "rootNamespace": "Ftg.SoundSystem",
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
