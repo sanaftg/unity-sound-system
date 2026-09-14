@@ -202,6 +202,7 @@ namespace Ftg.SoundSystem
         private bool TryGetEntry(string key, SoundChannel? requiredChannel, out SoundEntry entry)
         {
             EnsureInitialized();
+            entry = null;
             if (string.IsNullOrWhiteSpace(key) || !entries.TryGetValue(key, out entry))
             {
                 Debug.LogWarning($"[SoundSystem] Unknown sound key: '{key}'.");
