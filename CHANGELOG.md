@@ -2,6 +2,16 @@
 
 All notable changes to this package are documented in this file.
 
+## [0.1.2] - 2026-09-14
+
+### Added
+
+- Added positioned and Transform-following 3D one-shot playback.
+- Added reusable Spatial Profile assets and a default profile setting.
+- Added SoundEmitter for Inspector, UnityEvent and Animation Event playback.
+- Added batch AudioClip registration to the SoundCatalog Inspector.
+- Added spatial playback and catalog tooling documentation.
+
 ## [0.1.1] - 2026-09-14
 
 ### Fixed

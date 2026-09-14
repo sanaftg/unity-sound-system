@@ -21,6 +21,7 @@ namespace Ftg.SoundSystem
 
         [SerializeField] private SoundCatalog catalog;
         [SerializeField] private AudioMixer mixer;
+        [SerializeField] private SpatialProfile defaultSpatialProfile;
         [SerializeField] private MixerBinding[] mixerBindings = Array.Empty<MixerBinding>();
         [SerializeField, Min(1)] private int initialOneShotPoolSize = 8;
         [SerializeField, Min(1)] private int maximumOneShotPoolSize = 32;
@@ -29,6 +30,7 @@ namespace Ftg.SoundSystem
 
         public SoundCatalog Catalog => catalog;
         public AudioMixer Mixer => mixer;
+        public SpatialProfile DefaultSpatialProfile => defaultSpatialProfile;
         public int InitialOneShotPoolSize => Mathf.Max(1, initialOneShotPoolSize);
         public int MaximumOneShotPoolSize => Mathf.Max(InitialOneShotPoolSize, maximumOneShotPoolSize);
         public float DefaultCrossfadeSeconds => Mathf.Max(0f, defaultCrossfadeSeconds);
