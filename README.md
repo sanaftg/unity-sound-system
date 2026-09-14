@@ -58,6 +58,14 @@ SoundService.Instance.SetVolume(SoundChannel.Bgm, 0.8f);
 SoundService.Instance.StopBgm(1f);
 ```
 
+Calling `PlayBgm` with the currently active key keeps playback at its current
+position. To intentionally restart it from the beginning, pass
+`restartIfSame: true`.
+
+```csharp
+SoundService.Instance.PlayBgm("music.lobby", fadeSeconds: 0f, restartIfSame: true);
+```
+
 ### Playback modes
 
 - `OneShot`: plays once. Intended for SE, jingles and voices.
