@@ -95,4 +95,4 @@ Add `SoundEmitter` to a GameObject when playback should be triggered from the In
 
 ## Catalog registration
 
-Select multiple AudioClip assets and open their SoundCatalog. In the Catalog Inspector, choose a channel and click **Add Selected AudioClips**. Keys are generated from the channel and clip name, and made unique without adding 2D/3D state to the catalog.
+Open a SoundCatalog, choose a channel in its Inspector, then drag multiple AudioClip assets from the Project window onto **Drop AudioClips Here**. Keys are generated from the channel and clip name, and made unique without adding 2D/3D state to the catalog.

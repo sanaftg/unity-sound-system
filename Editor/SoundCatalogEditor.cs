@@ -17,16 +17,31 @@ namespace Ftg.SoundSystem.Editor
             EditorGUILayout.LabelField("Batch Registration", EditorStyles.boldLabel);
             channel = (SoundChannel)EditorGUILayout.EnumPopup("Channel", channel);
 
-            var clips = GetSelectedClips();
-            using (new EditorGUI.DisabledScope(clips.Count == 0))
-            {
-                if (GUILayout.Button($"Add Selected AudioClips ({clips.Count})"))
-                    AddClips(clips);
-            }
+            var dropArea = GUILayoutUtility.GetRect(0f, 52f, GUILayout.ExpandWidth(true));
+            GUI.Box(dropArea, "Drop AudioClips Here");
+            HandleDrop(dropArea);
 
             EditorGUILayout.HelpBox(
-                "Select AudioClip assets in the Project window. Playback API selection determines 2D or 3D.",
+                "Drag multiple AudioClip assets from the Project window. Playback API selection determines 2D or 3D.",
                 MessageType.Info);
+        }
+
+        private void HandleDrop(Rect dropArea)
+        {
+            var current = Event.current;
+            if (!dropArea.Contains(current.mousePosition) ||
+                (current.type != EventType.DragUpdated && current.type != EventType.DragPerform))
+                return;
+
+            var clips = GetDraggedClips();
+            DragAndDrop.visualMode = clips.Count > 0 ? DragAndDropVisualMode.Copy : DragAndDropVisualMode.Rejected;
+            if (current.type == EventType.DragPerform && clips.Count > 0)
+            {
+                DragAndDrop.AcceptDrag();
+                AddClips(clips);
+            }
+
+            current.Use();
         }
 
         private void AddClips(IReadOnlyList<AudioClip> clips)
@@ -89,11 +104,11 @@ namespace Ftg.SoundSystem.Editor
             return keys;
         }
 
-        private static List<AudioClip> GetSelectedClips()
+        private static List<AudioClip> GetDraggedClips()
         {
             var clips = new List<AudioClip>();
-            foreach (var selected in Selection.objects)
-                if (selected is AudioClip clip)
+            foreach (var dragged in DragAndDrop.objectReferences)
+                if (dragged is AudioClip clip)
                     clips.Add(clip);
             return clips;
         }
