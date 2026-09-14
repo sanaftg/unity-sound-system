@@ -25,6 +25,7 @@ namespace Ftg.SoundSystem
         private AudioSource[] bgmSources;
         private AudioSource ambienceSource;
         private int activeBgmIndex;
+        private string currentBgmKey;
         private int bgmGeneration;
         private int ambienceGeneration;
         private Coroutine bgmRoutine;
@@ -71,6 +72,7 @@ namespace Ftg.SoundSystem
             StopAllSources();
             settings = newSettings;
             entries.Clear();
+            currentBgmKey = null;
 
             if (settings.Catalog != null)
             {
@@ -93,12 +95,20 @@ namespace Ftg.SoundSystem
             initialized = true;
         }
 
-        public bool PlayBgm(string key, float fadeSeconds = -1f)
+        public bool PlayBgm(string key, float fadeSeconds = -1f, bool restartIfSame = false)
         {
             if (!TryGetEntry(key, SoundChannel.Bgm, out var entry))
                 return false;
 
-            EnsureInitialized();
+            if (!restartIfSame &&
+                currentBgmKey == key &&
+                (bgmSources[activeBgmIndex].isPlaying ||
+                 entry.PlaybackMode == SoundPlaybackMode.RepeatWithInterval))
+            {
+                return true;
+            }
+
+            currentBgmKey = key;
             bgmGeneration++;
             if (bgmRoutine != null)
                 StopCoroutine(bgmRoutine);
@@ -111,6 +121,7 @@ namespace Ftg.SoundSystem
         public void StopBgm(float fadeSeconds = -1f)
         {
             EnsureInitialized();
+            currentBgmKey = null;
             bgmGeneration++;
             if (bgmRoutine != null)
                 StopCoroutine(bgmRoutine);
