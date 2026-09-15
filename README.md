@@ -95,4 +95,4 @@ Add `SoundEmitter` to a GameObject when playback should be triggered from the In
 
 ## Catalog registration
 
-Open a SoundCatalog, choose a channel in its Inspector, then drag multiple AudioClip assets from the Project window onto **Drop AudioClips Here**. Keys are generated from the channel and clip name, and made unique without adding 2D/3D state to the catalog.
+Open a SoundCatalog, choose a channel and optionally enter an explicit key prefix in its Inspector, then drag multiple AudioClip assets from the Project window onto **Drop AudioClips Here**. With an empty prefix, keys use only the clip name. For example, prefix `se.combat` and clip `sword_hit` produce `se.combat.sword.hit`. Asset directory paths are never used for key generation, and duplicate keys receive a numeric suffix.

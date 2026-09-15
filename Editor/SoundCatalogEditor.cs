@@ -9,6 +9,7 @@ namespace Ftg.SoundSystem.Editor
     public sealed class SoundCatalogEditor : UnityEditor.Editor
     {
         private SoundChannel channel = SoundChannel.Se;
+        private string keyPrefix = string.Empty;
 
         public override void OnInspectorGUI()
         {
@@ -16,6 +17,7 @@ namespace Ftg.SoundSystem.Editor
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Batch Registration", EditorStyles.boldLabel);
             channel = (SoundChannel)EditorGUILayout.EnumPopup("Channel", channel);
+            keyPrefix = EditorGUILayout.TextField("Key Prefix", keyPrefix);
 
             var dropArea = GUILayoutUtility.GetRect(0f, 52f, GUILayout.ExpandWidth(true));
             GUI.Box(dropArea, "Drop AudioClips Here");
@@ -66,7 +68,11 @@ namespace Ftg.SoundSystem.Editor
 
         private string CreateUniqueKey(HashSet<string> usedKeys, string clipName)
         {
-            var baseKey = $"{channel.ToString().ToLowerInvariant()}.{Normalize(clipName)}";
+            var normalizedName = Normalize(clipName);
+            var normalizedPrefix = Normalize(keyPrefix);
+            var baseKey = string.IsNullOrEmpty(normalizedPrefix)
+                ? normalizedName
+                : $"{normalizedPrefix}.{normalizedName}";
             var key = baseKey;
             var suffix = 2;
             while (!usedKeys.Add(key))
@@ -131,7 +137,7 @@ namespace Ftg.SoundSystem.Editor
                     separator = true;
                 }
             }
-            return builder.Length > 0 ? builder.ToString() : "sound";
+            return builder.ToString();
         }
     }
 }
