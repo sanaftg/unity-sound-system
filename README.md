@@ -7,7 +7,11 @@
 - AudioMixer: Master / BGM / SE / Jingle / Ambience / Voice
 - BGM crossfade using two AudioSources
 - Loop and non-loop repeat with a random interval
-- Pooled one-shot playback with per-sound concurrency limits
+- Pooled 2D, positioned 3D and Transform-following one-shot playback
+- Reusable Spatial Profile assets with a project-wide default
+- SoundEmitter component for Inspector, UnityEvent and Animation Event playback
+- Catalog Inspector tool for batch-registering selected AudioClips
+- Per-sound concurrency limits
 - PlayerPrefs volume persistence
 - ScriptableObject catalog with direct AudioClip references
 - Persistent service across scene changes
@@ -28,7 +32,7 @@ https://github.com/sanaftg/unity-sound-system.git
 After releases are tagged, pin a version:
 
 ```text
-https://github.com/sanaftg/unity-sound-system.git#v0.1.0
+https://github.com/sanaftg/unity-sound-system.git#v0.1.2
 ```
 
 ## Setup
@@ -50,7 +54,9 @@ The package intentionally does not contain an AudioMixer asset or game-specific 
 using Ftg.SoundSystem;
 
 SoundService.Instance.PlayBgm("music.lobby");
-SoundService.Instance.PlayOneShot("ui.card.select");
+SoundService.Instance.PlayOneShot("ui.card.select"); // 2D
+SoundService.Instance.PlayOneShotAt("se.sword.hit", hitPosition); // positioned 3D
+SoundService.Instance.PlayOneShotAttached("voice.attack", unitTransform); // following 3D
 SoundService.Instance.PlayAmbience("ambience.wind");
 
 SoundService.Instance.SetVolume(SoundChannel.Master, 1f);
@@ -75,3 +81,18 @@ AudioMixer assets and all licensed audio remain in the consuming game project.
 ## License
 
 MIT
+
+## Spatial audio
+
+Create reusable profiles from **Assets > Create > FTG > Sound System > Spatial Profile**. Assign the usual profile to Settings as the default, then omit it at call sites. Pass a different profile only for near or far sounds. The catalog does not store whether a sound is 2D or 3D; the playback API decides that.
+
+```csharp
+SoundService.Instance.PlayOneShotAt("se.footstep", position, nearProfile);
+SoundService.Instance.PlayOneShotAt("se.explosion", position, farProfile);
+```
+
+Add `SoundEmitter` to a GameObject when playback should be triggered from the Inspector, UnityEvent or Animation Event. Its `Play()` method supports 2D, positioned and attached playback.
+
+## Catalog registration
+
+Open a SoundCatalog, choose a channel in its Inspector, then drag multiple AudioClip assets from the Project window onto **Drop AudioClips Here**. Keys are generated from the channel and clip name, and made unique without adding 2D/3D state to the catalog.

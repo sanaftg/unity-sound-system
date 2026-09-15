@@ -12,6 +12,7 @@ namespace Ftg.SoundSystem
         {
             public AudioSource Source;
             public string Key;
+            public Transform FollowTarget;
         }
 
         private static SoundService instance;
@@ -50,6 +51,17 @@ namespace Ftg.SoundSystem
         }
 
         public bool IsInitialized => initialized;
+
+        private void LateUpdate()
+        {
+            foreach (var voice in voices)
+            {
+                if (!voice.Source.isPlaying || voice.FollowTarget == null)
+                    continue;
+
+                voice.Source.transform.position = voice.FollowTarget.position;
+            }
+        }
 
         private void Awake()
         {
@@ -158,6 +170,32 @@ namespace Ftg.SoundSystem
 
         public bool PlayOneShot(string key)
         {
+            return PlayOneShotInternal(key, false, Vector3.zero, null, null);
+        }
+
+        public bool PlayOneShotAt(string key, Vector3 position, SpatialProfile spatialProfile = null)
+        {
+            return PlayOneShotInternal(key, true, position, null, spatialProfile);
+        }
+
+        public bool PlayOneShotAttached(string key, Transform target, SpatialProfile spatialProfile = null)
+        {
+            if (target == null)
+            {
+                Debug.LogWarning("[SoundSystem] A target is required for attached playback.");
+                return false;
+            }
+
+            return PlayOneShotInternal(key, true, target.position, target, spatialProfile);
+        }
+
+        private bool PlayOneShotInternal(
+            string key,
+            bool spatial,
+            Vector3 position,
+            Transform followTarget,
+            SpatialProfile spatialProfile)
+        {
             if (!TryGetEntry(key, null, out var entry))
                 return false;
 
@@ -176,10 +214,23 @@ namespace Ftg.SoundSystem
 
             ConfigureSource(voice.Source, entry.Channel);
             voice.Key = key;
+            voice.FollowTarget = followTarget;
             voice.Source.clip = entry.Clip;
             voice.Source.volume = entry.Volume;
             voice.Source.pitch = entry.RandomPitch;
             voice.Source.loop = false;
+
+            if (spatial)
+            {
+                var profile = spatialProfile != null ? spatialProfile : settings.DefaultSpatialProfile;
+                if (profile != null)
+                    profile.ApplyTo(voice.Source);
+                else
+                    SpatialProfile.ApplyDefaults(voice.Source);
+
+                voice.Source.transform.position = position;
+            }
+
             voice.Source.Play();
             return true;
         }
@@ -190,6 +241,7 @@ namespace Ftg.SoundSystem
             {
                 voice.Source.Stop();
                 voice.Key = null;
+                voice.FollowTarget = null;
             }
         }
 
@@ -274,6 +326,9 @@ namespace Ftg.SoundSystem
         {
             source.outputAudioMixerGroup = settings != null ? settings.GetOutput(channel) : null;
             source.playOnAwake = false;
+            source.spatialBlend = 0f;
+            source.dopplerLevel = 0f;
+            source.transform.localPosition = Vector3.zero;
         }
 
         private Voice GetAvailableVoice()
@@ -283,6 +338,7 @@ namespace Ftg.SoundSystem
                 if (voice.Source.isPlaying)
                     continue;
                 voice.Key = null;
+                voice.FollowTarget = null;
                 return voice;
             }
 
